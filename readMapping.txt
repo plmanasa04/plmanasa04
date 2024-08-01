@@ -1,0 +1,39 @@
+# for read mapping#
+
+mkdir ref_genome
+cd ref_genome
+
+# ref genome data
+# go to UCSC genome browser and navigate to download genome by chromosome
+# for chr 17: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr17.fa.gz
+# for chr 18: https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr18.fa.gz
+# for chr 19:  https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr19.fa.gz
+ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr17.fa.gz
+ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr18.fa.gz
+ wget https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr19.fa.gz
+gunzip chr17.fa.gz
+gunzip chr18.fa.gz
+gunzip chr19.fa.gz
+
+install bwa
+git clone https://github.com/lh3/bwa.git
+cd bwa; make
+
+# build index
+cd ref_genome
+/workspace/data-interpreters/bwa/bwa index chr17.fa
+/workspace/data-interpreters/bwa/bwa index chr18.fa
+/workspace/data-interpreters/bwa/bwa index chr19.fa
+
+
+# map the reads
+mkdir read_mapping
+/workspace/data-interpreters/bwa/bwa mem -t 5  \
+     ref_genome/chr17.fa raw_data/ERR11468775_1_trimmed.fastq.gz raw_data/ERR11468775_2_trimmed.fastq.gz\
+     > read_mapping/sample1.sam
+ /workspace/data-interpreters/bwa/bwa mem -t 5  \
+     ref_genome/chr18.fa raw_data/ERR11468775_1_trimmed.fastq.gz raw_data/ERR11468775_2_trimmed.fastq.gz\
+     > read_mapping/sample2.sam
+/workspace/data-interpreters/bwa/bwa mem -t 5  \
+     ref_genome/chr19.fa raw_data/ERR11468775_1_trimmed.fastq.gz raw_data/ERR11468775_2_trimmed.fastq.gz\
+     > read_mapping/sample3.sam 
